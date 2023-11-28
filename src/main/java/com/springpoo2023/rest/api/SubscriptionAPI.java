@@ -2,7 +2,6 @@ package com.springpoo2023.rest.api;
 
 import com.springpoo2023.dtos.SubscriptionDTO;
 import com.springpoo2023.repository.entity.Subscription;
-import com.springpoo2023.repository.entity.User;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +22,8 @@ public interface SubscriptionAPI {
     ResponseEntity<List<Subscription>> getAllSubscription();
 
     @PutMapping("/canceled/{id}")
-    ResponseEntity<Object> canceledSubscription(@PathVariable(value = "id") UUID idSubscription,
-                                  @RequestBody @Valid SubscriptionDTO subscriptionDTO);
-    @PutMapping("/restarted/{id}")
-    ResponseEntity<Object> restartedSubscription(@PathVariable(value = "id") UUID idSubscription,
-                                  @RequestBody @Valid SubscriptionDTO subscriptionDTO);
+    ResponseEntity<Object> canceledSubscription(@PathVariable(value = "id") UUID idSubscription);
 
+    @PutMapping("/restarted/{id}")
+    ResponseEntity<Object> restartedSubscription(@PathVariable(value = "id") UUID idSubscription);
 }

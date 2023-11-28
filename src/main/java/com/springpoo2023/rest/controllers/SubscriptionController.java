@@ -4,7 +4,6 @@ import com.springpoo2023.dtos.SubscriptionDTO;
 import com.springpoo2023.repository.SubscriptionRepository;
 import com.springpoo2023.repository.entity.Status;
 import com.springpoo2023.repository.entity.Subscription;
-import com.springpoo2023.repository.entity.User;
 import com.springpoo2023.rest.api.SubscriptionAPI;
 import com.springpoo2023.service.StatusService;
 import org.springframework.beans.BeanUtils;
@@ -51,12 +50,21 @@ public class SubscriptionController implements SubscriptionAPI {
     }
 
     @Override
-    public ResponseEntity<Object> canceledSubscription(UUID idSubscription, SubscriptionDTO subscriptionDTO) {
-        return null; //TODO
+    public ResponseEntity<Object> canceledSubscription(UUID idSubscription) {
+
+        Subscription subscription = subscriptionRepository.getReferenceById(idSubscription);
+
+        statusService.statusCanceled(subscription.getStatusId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(subscription);
     }
 
     @Override
-    public ResponseEntity<Object> restartedSubscription(UUID idSubscription, SubscriptionDTO subscriptionDTO) {
-        return null; //TODO
+    public ResponseEntity<Object> restartedSubscription(UUID idSubscription) {
+        Subscription subscription = subscriptionRepository.getReferenceById(idSubscription);
+
+        statusService.statusRestarted(subscription.getStatusId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(subscription);
     }
 }
