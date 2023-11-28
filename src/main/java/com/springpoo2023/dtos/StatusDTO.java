@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 public class StatusDTO implements Serializable {
 
-    private static final long serialVersionUID = 1113L;
+    private static final long serialVersionUID = -2305477598832752474L;
 
     private UUID id;
 

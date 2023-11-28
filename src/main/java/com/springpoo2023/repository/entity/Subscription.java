@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(name = "Subscription")
 public class Subscription implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3279216625113353138L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

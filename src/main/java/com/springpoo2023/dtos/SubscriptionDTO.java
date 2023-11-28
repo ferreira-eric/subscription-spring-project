@@ -11,19 +11,16 @@ import java.util.UUID;
 @Setter
 public class SubscriptionDTO implements Serializable {
 
-    private static final long serialVersionUID = 1112L;
-    @NotBlank
+    private static final long serialVersionUID = -7459825067072894961L;
+
     private UUID id;
 
     @NotBlank
     private UUID userId;
 
-    @NotBlank
     private UUID statusId;
 
-    @NotBlank
     private LocalDateTime createdAt;
 
-    @NotBlank
     private LocalDateTime updateAt;
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,7 +16,8 @@ import java.util.UUID;
 @Table(name = "Users")
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1536780390749197518L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

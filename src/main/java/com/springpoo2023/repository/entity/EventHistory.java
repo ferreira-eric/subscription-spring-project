@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "Event_History")
 public class EventHistory {
 
-    private static final long serialVersionUID = 4L;
+    private static final long serialVersionUID = 654304531482054132L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

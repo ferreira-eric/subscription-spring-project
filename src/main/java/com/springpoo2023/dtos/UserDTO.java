@@ -14,13 +14,12 @@ import java.util.UUID;
 @Setter
 public class UserDTO implements Serializable {
 
-    private static final long serialVersionUID = 1111L;
+    private static final long serialVersionUID = 200359717740034318L;
 
     private UUID id;
 
     @NotBlank
     private String fullName;
 
-    @CreatedDate
     private LocalDateTime createdAt;
 }

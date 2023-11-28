@@ -6,13 +6,14 @@ import org.springframework.web.servlet.mvc.LastModified;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 public class EventHistoryDTO implements Serializable {
 
-    private static final long serialVersionUID = 1114L;
+    private static final long serialVersionUID = -1432268253557650235L;
 
     private UUID id;
 
@@ -20,6 +21,6 @@ public class EventHistoryDTO implements Serializable {
 
     private String type;
 
-    private LastModified createdAt;
+    private LocalDateTime createdAt;
 
 }
