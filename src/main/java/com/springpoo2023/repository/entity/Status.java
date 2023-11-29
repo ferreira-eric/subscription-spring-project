@@ -20,5 +20,6 @@ public class Status implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
     private StatusEnum statusName;
 }

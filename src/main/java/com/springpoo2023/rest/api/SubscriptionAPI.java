@@ -21,9 +21,9 @@ public interface SubscriptionAPI {
     @GetMapping("/all")
     ResponseEntity<List<Subscription>> getAllSubscription();
 
-    @PutMapping("/canceled/{id}")
+    @PostMapping("/canceled/{id}")
     ResponseEntity<Object> canceledSubscription(@PathVariable(value = "id") UUID idSubscription);
 
-    @PutMapping("/restarted/{id}")
+    @PostMapping("/restarted/{id}")
     ResponseEntity<Object> restartedSubscription(@PathVariable(value = "id") UUID idSubscription);
 }

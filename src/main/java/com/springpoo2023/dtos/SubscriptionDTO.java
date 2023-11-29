@@ -16,7 +16,6 @@ public class SubscriptionDTO implements Serializable {
 
     private UUID id;
 
-    @NotBlank
     private UUID userId;
 
     private UUID statusId;

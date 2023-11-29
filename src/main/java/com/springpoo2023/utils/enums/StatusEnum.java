@@ -7,10 +7,11 @@ import lombok.Getter;
 @Getter
 public enum StatusEnum {
 
-    SUBSCRIPTION_PURCHASED,
+    SUBSCRIPTION_PURCHASED("PURCHASED"),
 
-    SUBSCRIPTION_CANCELED,
+    SUBSCRIPTION_CANCELED("CANCELED"),
 
-    SUBSCRIPTION_RESTARTED;
+    SUBSCRIPTION_RESTARTED("RESTARTED");
 
+    private final String value;
 }
