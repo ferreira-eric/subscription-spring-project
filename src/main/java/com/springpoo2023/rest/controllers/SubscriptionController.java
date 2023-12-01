@@ -123,7 +123,7 @@ public class SubscriptionController implements SubscriptionAPI {
         statusRepository.save(status);
     }
 
-    private void createEventHistory(UUID idSubscription,UUID idStatus) {
+    protected void createEventHistory(UUID idSubscription,UUID idStatus) {
         Optional<Status> statusOpt = statusRepository.findById(idStatus);
 
         if(statusOpt.isPresent()){
