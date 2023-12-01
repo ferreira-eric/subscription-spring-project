@@ -8,6 +8,8 @@ import com.springpoo2023.repository.entity.EventHistory;
 import com.springpoo2023.repository.entity.Status;
 import com.springpoo2023.repository.entity.Subscription;
 import com.springpoo2023.rest.api.SubscriptionAPI;
+import com.springpoo2023.service.StatusService;
+import com.springpoo2023.service.SubscriptionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static com.springpoo2023.utils.enums.StatusEnum.*;
 
 @RestController
 @RequestMapping(value = "/subscription")
@@ -34,13 +34,21 @@ public class SubscriptionController implements SubscriptionAPI {
     @Autowired
     private EventHistoryRepository eventRepository;
 
+    @Autowired
+    private StatusService statusService;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
+
     @Override
     public ResponseEntity<Subscription> createSubscription(SubscriptionDTO subscriptionDTO) {
 
         Subscription subscription = new Subscription();
         BeanUtils.copyProperties(subscriptionDTO, subscription);
 
-        Status status = createStatus();
+        if(subscriptionService.userHasSubscription(subscription.getUserId())) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+        Status status = statusService.createStatus();
         subscription.setStatusId(status.getId());
 
         Subscription subs = subscriptionRepository.save(subscription);
@@ -48,6 +56,38 @@ public class SubscriptionController implements SubscriptionAPI {
         createEventHistory(subs.getId(), status.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subs);
+    }
+
+    @Override
+    public ResponseEntity<Object> canceledSubscription(UUID idSubscription) {
+        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
+
+        if(subscription.isPresent()){
+            Subscription subs = subscription.get();
+            statusService.statusCanceled(subs.getStatusId());
+
+            createEventHistory(idSubscription, subs.getStatusId());
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @Override
+    public ResponseEntity<Object> restartedSubscription(UUID idSubscription) {
+        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
+
+        if(subscription.isPresent()){
+            Subscription subs = subscription.get();
+            statusService.statusRestarted(subs.getStatusId());
+
+            createEventHistory(idSubscription, subs.getStatusId());
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @Override
@@ -69,61 +109,7 @@ public class SubscriptionController implements SubscriptionAPI {
         return ResponseEntity.status(HttpStatus.OK).body(subscription);
     }
 
-    @Override
-    public ResponseEntity<Object> canceledSubscription(UUID idSubscription) {
-        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
-
-        if(subscription.isPresent()){
-            Subscription subs = subscription.get();
-            statusCanceled(subs.getStatusId());
-
-            createEventHistory(idSubscription, subs.getStatusId());
-
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    @Override
-    public ResponseEntity<Object> restartedSubscription(UUID idSubscription) {
-        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
-
-        if(subscription.isPresent()){
-            Subscription subs = subscription.get();
-            statusRestarted(subs.getStatusId());
-
-            createEventHistory(idSubscription, subs.getStatusId());
-
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    private Status createStatus() {
-        Status status = new Status();
-        status.setStatusName(SUBSCRIPTION_PURCHASED);
-
-        return statusRepository.save(status);
-    }
-
-    private void statusCanceled(UUID idStatus) {
-        Status status = statusRepository.getReferenceById(idStatus);
-        status.setStatusName(SUBSCRIPTION_CANCELED);
-
-        statusRepository.save(status);
-    }
-
-    private void statusRestarted(UUID idStatus) {
-        Status status = statusRepository.getReferenceById(idStatus);
-
-        status.setStatusName(SUBSCRIPTION_RESTARTED);
-
-        statusRepository.save(status);
-    }
-
-    protected void createEventHistory(UUID idSubscription,UUID idStatus) {
+    protected void createEventHistory(UUID idSubscription, UUID idStatus) {
         Optional<Status> statusOpt = statusRepository.findById(idStatus);
 
         if(statusOpt.isPresent()){
