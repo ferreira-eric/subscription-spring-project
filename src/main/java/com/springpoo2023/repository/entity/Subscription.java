@@ -1,5 +1,8 @@
 package com.springpoo2023.repository.entity;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,4 +37,11 @@ public class Subscription implements Serializable {
     @LastModifiedDate
     private LocalDateTime updateAt;
 
+    public static Subscription deserialize(Object object){
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        return mapper.convertValue(object, Subscription.class);
+    }
 }

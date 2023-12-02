@@ -24,14 +24,13 @@ public class UserController implements UserAPI {
 
     @Override
     public ResponseEntity<User> saveUser(UserDTO userDTO) {
-        User user = new User();
-        BeanUtils.copyProperties(userDTO, user);
+        User user = User.deserialize(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
     }
 
     @Override
-    public ResponseEntity<Optional<User>> getUserById(UUID id) {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findById(id));
+    public ResponseEntity<Optional<User>> getUserById(UUID idUser) {
+        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findById(idUser));
     }
 
     @Override
@@ -40,9 +39,9 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public ResponseEntity<Object> update(UUID idProduct, UserDTO userDTO) {
+    public ResponseEntity<Object> update(UUID idUser, UserDTO userDTO) {
 
-        Optional<User> userOptional = userRepository.findById(idProduct);
+        Optional<User> userOptional = userRepository.findById(idUser);
 
         if (userOptional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
@@ -53,13 +52,13 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public ResponseEntity<Object> deleteUser(UUID idProduct) {
+    public ResponseEntity<Object> deleteUser(UUID idUser) {
 
-        Optional<User> user = userRepository.findById(idProduct);
+        Optional<User> user = userRepository.findById(idUser);
 
         if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        userRepository.deleteById(idProduct);
+        userRepository.deleteById(idUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

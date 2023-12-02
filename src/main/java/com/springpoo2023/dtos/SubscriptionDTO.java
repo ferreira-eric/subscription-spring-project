@@ -1,6 +1,6 @@
 package com.springpoo2023.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +16,7 @@ public class SubscriptionDTO implements Serializable {
 
     private UUID id;
 
+    @NotNull
     private UUID userId;
 
     private UUID statusId;

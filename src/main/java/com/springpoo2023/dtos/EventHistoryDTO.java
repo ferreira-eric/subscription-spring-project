@@ -2,8 +2,6 @@ package com.springpoo2023.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.servlet.mvc.LastModified;
-
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,5 +20,4 @@ public class EventHistoryDTO implements Serializable {
     private String type;
 
     private LocalDateTime createdAt;
-
 }
