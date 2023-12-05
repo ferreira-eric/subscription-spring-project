@@ -1,7 +1,6 @@
 package com.springpoo2023.rest.api;
 
 import com.springpoo2023.dtos.SubscriptionDTO;
-import com.springpoo2023.exceptions.StatusNotFoundException;
 import com.springpoo2023.repository.entity.Subscription;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
