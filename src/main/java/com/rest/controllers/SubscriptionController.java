@@ -2,13 +2,8 @@ package com.rest.controllers;
 
 import com.dtos.SubscriptionDTO;
 import com.exceptions.StatusNotFoundException;
-import com.repository.EventHistoryRepository;
-import com.repository.StatusRepository;
-import com.repository.SubscriptionRepository;
-import com.repository.entity.EventHistory;
-import com.repository.entity.Status;
-import com.repository.entity.Subscription;
 import com.rest.api.SubscriptionAPI;
+import com.service.EventHistoryService;
 import com.service.StatusService;
 import com.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -26,52 +20,36 @@ import java.util.UUID;
 public class SubscriptionController implements SubscriptionAPI {
 
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
-
-    @Autowired
-    private StatusRepository statusRepository;
-
-    @Autowired
-    private EventHistoryRepository eventRepository;
-
-    @Autowired
     private StatusService statusService;
 
     @Autowired
     private SubscriptionService subscriptionService;
 
+    @Autowired
+    private EventHistoryService eventHistoryService;
+
     @Override
-    public ResponseEntity<Subscription> createSubscription(SubscriptionDTO subscriptionDTO) {
+    public ResponseEntity<Object> createSubscription(SubscriptionDTO subscriptionDTO) {
+        if(subscriptionService.userHasSubscription(subscriptionDTO.getUserId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
-        Subscription subscription = Subscription.deserialize(subscriptionDTO);
+        var subscription = subscriptionService.create(subscriptionDTO);
 
-        if(subscriptionService.userHasSubscription(subscription.getUserId())) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        eventHistoryService.createEventHistory(subscription.getId(), subscription.getId());
 
-        Status status = statusService.createStatus();
-        subscription.setStatusId(status.getId());
-
-        Subscription subs = subscriptionRepository.save(subscription);
-
-        createEventHistory(subs.getId(), status.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(subs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 
     @Override
     public ResponseEntity<Object> canceledSubscription(UUID idSubscription){
         try {
-            Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
+            var subscription = subscriptionService.findById(idSubscription);
+            statusService.statusCanceled(subscription.getStatusId());
 
-            if(subscription.isPresent()){
-                Subscription subs = subscription.get();
-                statusService.statusCanceled(subs.getStatusId());
+            eventHistoryService.createEventHistory(idSubscription, subscription.getStatusId());
 
-                createEventHistory(idSubscription, subs.getStatusId());
-
-                return ResponseEntity.status(HttpStatus.OK).build();
-            }
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch (StatusNotFoundException st) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(st.getMessage());
@@ -81,53 +59,28 @@ public class SubscriptionController implements SubscriptionAPI {
     @Override
     public ResponseEntity<Object> restartedSubscription(UUID idSubscription){
         try {
-            Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
+            var statusId = subscriptionService.restartedSubscription(idSubscription);
 
-            if (subscription.isPresent()) {
-                Subscription subs = subscription.get();
-                statusService.statusRestarted(subs.getStatusId());
+            eventHistoryService.createEventHistory(idSubscription, statusId);
 
-                createEventHistory(idSubscription, subs.getStatusId());
-
-                return ResponseEntity.status(HttpStatus.OK).build();
-            }
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
-        catch (StatusNotFoundException st){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(st.getMessage());
+        catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 
     @Override
-    public ResponseEntity<Optional<Subscription>> getSubscriptionById(UUID idSubscription) {
-
-        Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
-
-        if(subscription.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<Object> getSubscriptionById(UUID idSubscription) {
+        var subscription = subscriptionService.findById(idSubscription);
 
         return ResponseEntity.status(HttpStatus.OK).body(subscription);
     }
 
     @Override
-    public ResponseEntity<List<Subscription>> getAllSubscription() {
-        List<Subscription> subscription = subscriptionRepository.findAll();
-
-        if(subscription.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<List<?>> getAllSubscription() {
+        var subscription = subscriptionService.findAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(subscription);
-    }
-
-    protected void createEventHistory(UUID idSubscription, UUID idStatus) {
-        Optional<Status> statusOpt = statusRepository.findById(idStatus);
-
-        if(statusOpt.isPresent()){
-            Status status = statusOpt.get();
-            EventHistory event = new EventHistory();
-
-            event.setSubscriptionId(idSubscription);
-            event.setType(status.getStatusName().getValue());
-            eventRepository.save(event);
-        }
     }
 }

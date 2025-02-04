@@ -1,5 +1,8 @@
 package com.dtos;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,4 +27,12 @@ public class SubscriptionDTO implements Serializable {
     private LocalDateTime createdAt;
 
     private LocalDateTime updateAt;
+
+    public static SubscriptionDTO deserialize(Object object){
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        return mapper.convertValue(object, SubscriptionDTO.class);
+    }
 }

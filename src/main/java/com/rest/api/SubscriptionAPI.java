@@ -13,13 +13,13 @@ import java.util.UUID;
 public interface SubscriptionAPI {
 
     @PostMapping("/create")
-    ResponseEntity<Subscription> createSubscription(@RequestBody @Valid SubscriptionDTO subscriptionDTO);
+    ResponseEntity<Object> createSubscription(@RequestBody @Valid SubscriptionDTO subscriptionDTO);
 
     @GetMapping("/{id}")
-    ResponseEntity<Optional<Subscription>> getSubscriptionById(@PathVariable(value = "id") UUID idSubscription);
+    ResponseEntity<Object> getSubscriptionById(@PathVariable(value = "id") UUID idSubscription);
 
     @GetMapping("/all")
-    ResponseEntity<List<Subscription>> getAllSubscription();
+    ResponseEntity<List<?>> getAllSubscription();
 
     @PostMapping("/canceled/{id}")
     ResponseEntity<Object> canceledSubscription(@PathVariable(value = "id") UUID idSubscription);

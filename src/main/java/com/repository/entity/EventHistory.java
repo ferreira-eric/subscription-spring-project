@@ -1,8 +1,10 @@
 package com.repository.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Event_History")
 public class EventHistory {

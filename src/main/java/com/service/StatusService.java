@@ -1,5 +1,6 @@
 package com.service;
 
+import com.dtos.SubscriptionDTO;
 import com.exceptions.StatusNotFoundException;
 import com.repository.StatusRepository;
 import com.repository.entity.Status;
@@ -39,6 +40,10 @@ public class StatusService {
 
         status.setStatusName(SUBSCRIPTION_RESTARTED);
         statusRepository.save(status);
+    }
+
+    public Status findById(UUID id) {
+        return statusRepository.findById(id).orElse(null);
     }
 
     private static boolean statusIsCanceled(Status status) {
