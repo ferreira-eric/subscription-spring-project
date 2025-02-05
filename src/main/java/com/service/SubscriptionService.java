@@ -1,6 +1,7 @@
 package com.service;
 
 import com.dtos.SubscriptionDTO;
+import com.exceptions.EntityNotFoundException;
 import com.repository.SubscriptionRepository;
 import com.repository.entity.Status;
 import com.repository.entity.Subscription;
@@ -34,11 +35,12 @@ public class SubscriptionService {
     public SubscriptionDTO findById(UUID id) {
         return subscriptionRepository.findById(id)
                 .map(SubscriptionDTO::deserialize)
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("Subscription", id));
     }
 
     public UUID restartedSubscription(UUID id) throws Exception {
-        var subscription = subscriptionRepository.findById(id).orElseThrow(); //TODO create exception
+        var subscription = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Subscription", id));
 
         statusService.statusRestarted(subscription.getStatusId());
 

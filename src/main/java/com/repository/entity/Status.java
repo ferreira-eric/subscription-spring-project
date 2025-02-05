@@ -3,7 +3,9 @@ package com.repository.entity;
 import com.utils.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@SuperBuilder
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Status")
 public class Status implements Serializable {

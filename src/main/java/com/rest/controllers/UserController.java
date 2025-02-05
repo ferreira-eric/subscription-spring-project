@@ -1,10 +1,8 @@
 package com.rest.controllers;
 
 import com.dtos.UserDTO;
-import com.repository.UserRepository;
-import com.repository.entity.User;
 import com.rest.api.UserAPI;
-import org.springframework.beans.BeanUtils;
+import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -20,45 +17,34 @@ import java.util.UUID;
 public class UserController implements UserAPI {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
-    public ResponseEntity<User> saveUser(UserDTO userDTO) {
-        User user = User.deserialize(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
+    public ResponseEntity<Object> saveUser(UserDTO userDTO) {
+        var user = userService.create(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @Override
-    public ResponseEntity<Optional<User>> getUserById(UUID idUser) {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findById(idUser));
+    public ResponseEntity<?> getUserById(UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
     @Override
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+    public ResponseEntity<List<?>> getAllUser() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
     @Override
-    public ResponseEntity<Object> update(UUID idUser, UserDTO userDTO) {
+    public ResponseEntity<Object> update(UserDTO userDTO) {
+        var user = userService.update(userDTO);
 
-        Optional<User> userOptional = userRepository.findById(idUser);
-
-        if (userOptional.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        User user = userOptional.get();
-        BeanUtils.copyProperties(userDTO, user);
-
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(user));
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @Override
-    public ResponseEntity<Object> deleteUser(UUID idUser) {
-
-        Optional<User> user = userRepository.findById(idUser);
-
-        if (user.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        userRepository.deleteById(idUser);
+    public ResponseEntity<?> deleteUser(UUID idUser) {
+        userService.deleteById(idUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }

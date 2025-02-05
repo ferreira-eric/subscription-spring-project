@@ -1,6 +1,6 @@
 package com.service;
 
-import com.dtos.SubscriptionDTO;
+import com.exceptions.EntityNotFoundException;
 import com.exceptions.StatusNotFoundException;
 import com.repository.StatusRepository;
 import com.repository.entity.Status;
@@ -18,14 +18,15 @@ public class StatusService {
     StatusRepository statusRepository;
 
     public Status createStatus() {
-        Status status = new Status();
-        status.setStatusName(SUBSCRIPTION_PURCHASED);
+        var status = Status.builder()
+                .statusName(SUBSCRIPTION_PURCHASED)
+                .build();
 
         return statusRepository.save(status);
     }
 
-    public void statusCanceled(UUID idStatus) throws StatusNotFoundException{
-        Status status = statusRepository.getReferenceById(idStatus);
+    public void statusCanceled(UUID id) throws StatusNotFoundException{
+        Status status = statusRepository.getReferenceById(id);
 
         if(statusIsCanceled(status))  throw new StatusNotFoundException();
 
@@ -33,8 +34,8 @@ public class StatusService {
         statusRepository.save(status);
     }
 
-    public void statusRestarted(UUID idStatus) throws StatusNotFoundException{
-        Status status = statusRepository.getReferenceById(idStatus);
+    public void statusRestarted(UUID id) throws StatusNotFoundException{
+        Status status = statusRepository.getReferenceById(id);
 
         if(!statusIsCanceled(status))  throw new StatusNotFoundException();
 
@@ -43,7 +44,8 @@ public class StatusService {
     }
 
     public Status findById(UUID id) {
-        return statusRepository.findById(id).orElse(null);
+        return statusRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Status", id));
     }
 
     private static boolean statusIsCanceled(Status status) {
