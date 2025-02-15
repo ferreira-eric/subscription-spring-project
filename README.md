@@ -5,6 +5,7 @@
 Este projeto faz parte de uma iniciativa de uma empresa fictícia que está entrando no mercado de **serviços de streaming**. O objetivo é gerenciar as assinaturas dos clientes, garantindo que os status sejam atualizados corretamente com base em diferentes tipos de notificações.
 
  **Tipos de Notificações**:
+ - **SUBSCRIPTION_WAITING_FOR_PAYMENT** → Assinatura esperando pagamento.
 -  **SUBSCRIPTION_PURCHASED** → Assinatura ativada após a compra.
 -  **SUBSCRIPTION_CANCELED** → Assinatura cancelada pelo usuário.
 -  **SUBSCRIPTION_RESTARTED** → Assinatura reativada após recuperação.
@@ -18,7 +19,8 @@ Este projeto foi desenvolvido utilizando:
 - **Java 17+** ☕  
 - **Spring Boot 3.3.3** 🚀  
 - **Spring Data JPA** 🔍  
-- **PostgreSQL** 🐘  
+- **PostgreSQL** 🐘
+- **Flyway** 💿
 - **Swagger OpenAPI** 📜  
 
 ---
@@ -35,14 +37,15 @@ Este projeto foi desenvolvido utilizando:
 
 ### 🏗️ Configuração do Banco de Dados
 
-Crie um banco de dados no PostgreSQL e configure as credenciais no `application.properties` ou defina variáveis de ambiente:
+Crie um banco de dados no PostgreSQL e configure as credenciais no `application.yml` ou defina variáveis de ambiente:
 
-```properties
-  spring.datasource.url = jdbc:postgresql://localhost:5432/seu_banco
-  spring.datasource.username = seu_usuario
-  spring.datasource.password = sua_senha
-  spring.jpa.hibernate.ddl-auto = update
-  spring.jpa.properties.hibernate.jdbc.lob.non_contextural_creation = true
+```yml
+  spring:
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/subscription}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:database123}
+    driver-class-name: org.postgresql.Driver
 ```
 ---
 
@@ -91,7 +94,9 @@ A API conta com documentação Swagger disponível em:
 │   │   ├── utils/enums/        # Enumerações e utilitários
 │   │   ├── SubscriptionApplication  # Classe principal
 │   ├── resources/
-│   │   ├── application.properties  # Configurações da aplicação
+│   │   ├── application.yml  # Configurações da aplicação
+│   │   ├── db
+│   │   │   ├── migrations/  # Migrations usando Flyway
 ├── test/                      
 ```
 
