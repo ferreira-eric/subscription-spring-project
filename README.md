@@ -42,9 +42,9 @@ Crie um banco de dados no PostgreSQL e configure as credenciais no `application.
 ```yml
   spring:
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/subscription}
-    username: ${POSTGRES_USERNAME:postgres}
-    password: ${POSTGRES_PASSWORD:database123}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/SEU_BANCO}
+    username: ${POSTGRES_USERNAME:SEU_USER}
+    password: ${POSTGRES_PASSWORD:SUA_SENHA}
     driver-class-name: org.postgresql.Driver
 ```
 ---
