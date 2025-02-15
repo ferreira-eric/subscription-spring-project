@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/subscription}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:database123}
+    driver-class-name: org.postgresql.Driver
+
+flyway:
+  baseline-on-migrate: true
+  enabled: true
+  sechemas: public
+

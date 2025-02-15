@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +20,7 @@ public class SubscriptionService {
     @Autowired
     private StatusService statusService;
 
-    public boolean userHasSubscription(UUID idUser) {
+    public boolean userHasSubscription(Long idUser) {
         return subscriptionRepository.findByUserId(idUser).isPresent();
     }
 
@@ -32,19 +31,19 @@ public class SubscriptionService {
         return SubscriptionDTO.deserialize(subscriptionRepository.save(Subscription.deserialize(subscriptionDto)));
     }
 
-    public SubscriptionDTO findById(UUID id) {
+    public SubscriptionDTO findById(Long id) {
         return subscriptionRepository.findById(id)
                 .map(SubscriptionDTO::deserialize)
                 .orElseThrow(() -> new EntityNotFoundException("Subscription", id));
     }
 
-    public UUID restartedSubscription(UUID id) throws Exception {
+    public Long restartedSubscription(Long id) throws Exception {
         var subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subscription", id));
 
-        statusService.statusRestarted(subscription.getStatusId());
+        statusService.statusRestarted(subscription.getStatus().getId());
 
-        return subscription.getStatusId();
+        return subscription.getStatus().getId();
     }
 
     public List<SubscriptionDTO> findAll() {

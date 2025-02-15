@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,12 +18,12 @@ public class SubscriptionDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = -7459825067072894961L;
 
-    private UUID id;
+    private Long id;
 
     @NotNull
-    private UUID userId;
+    private Long userId;
 
-    private UUID statusId;
+    private Long statusId;
 
     private LocalDateTime createdAt;
 

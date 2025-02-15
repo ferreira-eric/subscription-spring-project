@@ -6,12 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum StatusEnum {
-
-    SUBSCRIPTION_PURCHASED("PURCHASED"),
-
-    SUBSCRIPTION_CANCELED("CANCELED"),
-
-    SUBSCRIPTION_RESTARTED("RESTARTED");
-
-    private final String value;
+    SUBSCRIPTION_WAITING_FOR_PAYMENT,
+    SUBSCRIPTION_PURCHASED,
+    SUBSCRIPTION_CANCELED,
+    SUBSCRIPTION_RESTARTED
 }

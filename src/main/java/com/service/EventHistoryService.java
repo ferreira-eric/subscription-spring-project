@@ -1,11 +1,11 @@
 package com.service;
 
+import com.dtos.SubscriptionDTO;
 import com.repository.EventHistoryRepository;
 import com.repository.entity.EventHistory;
+import com.repository.entity.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class EventHistoryService {
@@ -16,12 +16,12 @@ public class EventHistoryService {
     @Autowired
     private StatusService statusService;
 
-    public void createEventHistory(UUID idSubscription, UUID idStatus) {
+    public void createEventHistory(SubscriptionDTO subscriptionDTO, Long idStatus) {
         var status = statusService.findById(idStatus);
 
         var eventHistory = EventHistory.builder()
-                .subscriptionId(idSubscription)
-                .type(status.getStatusName().getValue())
+                .subscription(Subscription.deserialize(subscriptionDTO))
+                .type(status.getStatusName())
                 .build();
 
         eventHistoryRepository.save(eventHistory);

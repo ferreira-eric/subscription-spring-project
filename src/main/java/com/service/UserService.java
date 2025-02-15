@@ -30,13 +30,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO findById(UUID id) {
+    public UserDTO findById(Long id) {
         return userRepository.findById(id)
                 .map(UserDTO::deserialize)
                 .orElseThrow();
     }
 
-    public void deleteById(UUID id) {
+    public void deleteById(Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User", id));
 

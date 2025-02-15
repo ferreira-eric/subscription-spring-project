@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,7 +19,7 @@ public class UserDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 200359717740034318L;
 
-    private UUID id;
+    private Long id;
 
     @NotBlank
     private String fullName;

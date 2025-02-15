@@ -7,8 +7,6 @@ import com.repository.entity.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 import static com.utils.enums.StatusEnum.*;
 
 @Service
@@ -25,7 +23,7 @@ public class StatusService {
         return statusRepository.save(status);
     }
 
-    public void statusCanceled(UUID id) throws StatusNotFoundException{
+    public void statusCanceled(Long id) throws StatusNotFoundException{
         Status status = statusRepository.getReferenceById(id);
 
         if(statusIsCanceled(status))  throw new StatusNotFoundException();
@@ -34,7 +32,7 @@ public class StatusService {
         statusRepository.save(status);
     }
 
-    public void statusRestarted(UUID id) throws StatusNotFoundException{
+    public void statusRestarted(Long id) throws StatusNotFoundException{
         Status status = statusRepository.getReferenceById(id);
 
         if(!statusIsCanceled(status))  throw new StatusNotFoundException();
@@ -43,12 +41,12 @@ public class StatusService {
         statusRepository.save(status);
     }
 
-    public Status findById(UUID id) {
+    public Status findById(Long id) {
         return statusRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Status", id));
     }
 
     private static boolean statusIsCanceled(Status status) {
-        return status.getStatusName().getValue().equalsIgnoreCase(SUBSCRIPTION_CANCELED.getValue());
+        return status.getStatusName().equals(SUBSCRIPTION_CANCELED);
     }
 }

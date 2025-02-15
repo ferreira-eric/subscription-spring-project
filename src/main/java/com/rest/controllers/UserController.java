@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/management")
@@ -26,7 +25,7 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public ResponseEntity<?> getUserById(UUID id) {
+    public ResponseEntity<?> getUserById(Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
@@ -43,7 +42,7 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public ResponseEntity<?> deleteUser(UUID idUser) {
+    public ResponseEntity<?> deleteUser(Long idUser) {
         userService.deleteById(idUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();

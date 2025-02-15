@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,7 +23,7 @@ public class Status implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private StatusEnum statusName;

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/subscription")
@@ -36,18 +35,18 @@ public class SubscriptionController implements SubscriptionAPI {
 
         var subscription = subscriptionService.create(subscriptionDTO);
 
-        eventHistoryService.createEventHistory(subscription.getId(), subscription.getId());
+        eventHistoryService.createEventHistory(subscription, subscription.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
     }
 
     @Override
-    public ResponseEntity<Object> canceledSubscription(UUID idSubscription){
+    public ResponseEntity<Object> canceledSubscription(Long idSubscription){
         try {
             var subscription = subscriptionService.findById(idSubscription);
             statusService.statusCanceled(subscription.getStatusId());
 
-            eventHistoryService.createEventHistory(idSubscription, subscription.getStatusId());
+            eventHistoryService.createEventHistory(subscription, subscription.getStatusId());
 
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -57,11 +56,12 @@ public class SubscriptionController implements SubscriptionAPI {
     }
 
     @Override
-    public ResponseEntity<Object> restartedSubscription(UUID idSubscription){
+    public ResponseEntity<Object> restartedSubscription(Long idSubscription){
         try {
             var statusId = subscriptionService.restartedSubscription(idSubscription);
+            var subscription = subscriptionService.findById(idSubscription);
 
-            eventHistoryService.createEventHistory(idSubscription, statusId);
+            eventHistoryService.createEventHistory(subscription, statusId);
 
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -71,7 +71,7 @@ public class SubscriptionController implements SubscriptionAPI {
     }
 
     @Override
-    public ResponseEntity<Object> getSubscriptionById(UUID idSubscription) {
+    public ResponseEntity<Object> getSubscriptionById(Long idSubscription) {
         var subscription = subscriptionService.findById(idSubscription);
 
         return ResponseEntity.status(HttpStatus.OK).body(subscription);
