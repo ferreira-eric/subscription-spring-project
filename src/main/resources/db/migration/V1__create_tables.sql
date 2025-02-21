@@ -11,11 +11,11 @@ CREATE TABLE status (
 
 CREATE TABLE subscription (
                               id SERIAL PRIMARY KEY,
-                              user_id INT NOT NULL,
+                              users_id INT NOT NULL UNIQUE,
                               status_id INT NOT NULL,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                              FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+                              FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
                               FOREIGN KEY (status_id) REFERENCES status(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -30,9 +30,18 @@ CREATE TABLE event_history (
 CREATE TABLE payment (
                          id SERIAL PRIMARY KEY,
                          subscription_id INT NOT NULL,
+                         users_id INT NOT NULL UNIQUE,
                          amount DECIMAL(10,2) NOT NULL,
                          status VARCHAR(50) NOT NULL,
-                         transaction_id VARCHAR(100) NOT NULL UNIQUE,
                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                         FOREIGN KEY (subscription_id) REFERENCES subscription(id) ON DELETE RESTRICT ON UPDATE CASCADE
+                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         FOREIGN KEY (subscription_id) REFERENCES subscription(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+                         FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE transaction (
+                         id UUID PRIMARY KEY,
+                         payment_id INT NOT NULL UNIQUE,
+                         FOREIGN KEY (payment_id) REFERENCES payment(id) ON DELETE RESTRICT ON UPDATE CASCADE
+
 );

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Users")
+@Table(name = "users")
 public class User implements Serializable {
 
     @Serial

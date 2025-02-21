@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serial;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "payment")
 public class Payment implements Serializable {
 
     @Serial
@@ -30,8 +32,13 @@ public class Payment implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne
     @JoinColumn(name = "subscription_id", nullable = false)
-    private Long subscriptionId;
+    private Subscription subscription;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -40,10 +47,11 @@ public class Payment implements Serializable {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    @Column(nullable = false)
-    private String transactionId;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime updatedAt;
 }

@@ -16,7 +16,7 @@ import java.io.Serializable;
 @SuperBuilder
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Status")
+@Table(name = "status")
 public class Status implements Serializable {
 
     private static final long serialVersionUID = 7473477978021073570L;

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Subscription")
+@Table(name = "subscription")
 public class Subscription implements Serializable {
 
     private static final long serialVersionUID = 3279216625113353138L;
@@ -26,7 +26,7 @@ public class Subscription implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -40,7 +40,7 @@ public class Subscription implements Serializable {
 
     @LastModifiedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     public static Subscription deserialize(Object object){
         ObjectMapper mapper = new ObjectMapper();

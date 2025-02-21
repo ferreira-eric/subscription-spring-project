@@ -17,13 +17,13 @@ public class StatusService {
 
     public Status createStatus() {
         var status = Status.builder()
-                .statusName(SUBSCRIPTION_PURCHASED)
+                .statusName(SUBSCRIPTION_WAITING_FOR_PAYMENT)
                 .build();
 
         return statusRepository.save(status);
     }
 
-    public void statusCanceled(Long id) throws StatusNotFoundException{
+    public void updateStatusToCanceled(Long id) throws StatusNotFoundException{
         Status status = statusRepository.getReferenceById(id);
 
         if(statusIsCanceled(status))  throw new StatusNotFoundException();
@@ -32,7 +32,7 @@ public class StatusService {
         statusRepository.save(status);
     }
 
-    public void statusRestarted(Long id) throws StatusNotFoundException{
+    public void updateStatusToRestarted(Long id) throws StatusNotFoundException{
         Status status = statusRepository.getReferenceById(id);
 
         if(!statusIsCanceled(status))  throw new StatusNotFoundException();
@@ -41,7 +41,7 @@ public class StatusService {
         statusRepository.save(status);
     }
 
-    public Status findById(Long id) {
+    public Status getById(Long id) {
         return statusRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Status", id));
     }

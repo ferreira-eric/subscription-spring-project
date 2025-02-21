@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Event_History")
+@Table(name = "event_history")
 public class EventHistory {
 
     private static final long serialVersionUID = 654304531482054132L;

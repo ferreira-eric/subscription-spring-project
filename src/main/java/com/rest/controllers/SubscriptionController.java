@@ -44,7 +44,7 @@ public class SubscriptionController implements SubscriptionAPI {
     public ResponseEntity<Object> canceledSubscription(Long idSubscription){
         try {
             var subscription = subscriptionService.findById(idSubscription);
-            statusService.statusCanceled(subscription.getStatusId());
+            statusService.updateStatusToCanceled(subscription.getStatusId());
 
             eventHistoryService.createEventHistory(subscription, subscription.getStatusId());
 
@@ -58,10 +58,8 @@ public class SubscriptionController implements SubscriptionAPI {
     @Override
     public ResponseEntity<Object> restartedSubscription(Long idSubscription){
         try {
-            var statusId = subscriptionService.restartedSubscription(idSubscription);
-            var subscription = subscriptionService.findById(idSubscription);
-
-            eventHistoryService.createEventHistory(subscription, statusId);
+            eventHistoryService.createEventHistory(subscriptionService.findById(idSubscription),
+                    subscriptionService.restartedSubscription(idSubscription));
 
             return ResponseEntity.status(HttpStatus.OK).build();
         }

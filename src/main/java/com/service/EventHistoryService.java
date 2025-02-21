@@ -17,7 +17,7 @@ public class EventHistoryService {
     private StatusService statusService;
 
     public void createEventHistory(SubscriptionDTO subscriptionDTO, Long idStatus) {
-        var status = statusService.findById(idStatus);
+        var status = statusService.getById(idStatus);
 
         var eventHistory = EventHistory.builder()
                 .subscription(Subscription.deserialize(subscriptionDTO))

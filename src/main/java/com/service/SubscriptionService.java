@@ -41,7 +41,7 @@ public class SubscriptionService {
         var subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subscription", id));
 
-        statusService.statusRestarted(subscription.getStatus().getId());
+        statusService.updateStatusToRestarted(subscription.getStatus().getId());
 
         return subscription.getStatus().getId();
     }
