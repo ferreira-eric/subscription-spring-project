@@ -100,7 +100,7 @@ A API conta com documentação Swagger disponível em:
 ├── test/                      
 ```
 ---
-## 📐 Modelo Relacional Banco de Dados
+## 📐 Modelo Entidade-Relacionamento Banco de Dados
 
 
 ![trabalho_final_database (1)](https://github.com/user-attachments/assets/db5f8d39-358a-49dd-95e0-026349097c3f)
