@@ -1,6 +1,7 @@
 package com.rest.api;
 
-import com.dtos.SubscriptionDTO;
+import com.dtos.PaymentDTO;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,14 @@ import java.util.List;
 public interface PaymentAPI {
 
     @PostMapping("/create")
-    ResponseEntity<Object> createPayment(@RequestBody @Valid SubscriptionDTO subscriptionDTO);
+    ResponseEntity<Object> createPayment(@RequestBody @Valid PaymentDTO paymentDTO);
+
+    @Transactional
+    @PostMapping("/pay")
+    ResponseEntity<?> makePayment(@RequestBody @Valid PaymentDTO paymentDTO);
 
     @GetMapping("/{id}")
-    ResponseEntity<Object> getPaymentById(@PathVariable(value = "id") Long idSubscription);
+    ResponseEntity<Object> getPaymentById(@PathVariable(value = "id") Long id);
 
     @GetMapping("/all")
     ResponseEntity<List<?>> getAllPayments();

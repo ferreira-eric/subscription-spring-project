@@ -37,7 +37,7 @@ public class Payment implements Serializable {
     private Subscription subscription;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @Column(nullable = false)

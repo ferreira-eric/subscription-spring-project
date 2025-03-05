@@ -7,6 +7,7 @@ import com.repository.StatusRepository;
 import com.repository.entity.Status;
 import com.repository.entity.Subscription;
 import com.utils.enums.StatusEnum;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class StatusService {
         return statusRepository.getByStatusName(statusName);
     }
 
+    @Transactional
     public void updateStatusToCanceled(SubscriptionDTO subscriptionDTO) throws StatusNotFoundException{
         Subscription subscription = modelMapper.map(subscriptionDTO, Subscription.class);
 
@@ -39,6 +41,16 @@ public class StatusService {
         subscriptionService.update(subscription.getId(), subscription);
     }
 
+    @Transactional
+    public void updateStatusToPurchased(SubscriptionDTO subscriptionDTO) throws StatusNotFoundException{
+        Subscription subscription = modelMapper.map(subscriptionDTO, Subscription.class);
+
+        subscription.setStatus(statusRepository.getByStatusName(SUBSCRIPTION_PURCHASED));
+
+        subscriptionService.update(subscription.getId(), subscription);
+    }
+
+    @Transactional
     public void updateStatusToRestarted(SubscriptionDTO subscriptionDTO) throws StatusNotFoundException{
         Subscription subscription = modelMapper.map(subscriptionDTO, Subscription.class);
 
