@@ -22,7 +22,7 @@ public class Status implements Serializable {
     private static final long serialVersionUID = 7473477978021073570L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)

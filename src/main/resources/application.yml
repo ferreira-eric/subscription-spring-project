@@ -5,6 +5,9 @@ spring:
     password: ${POSTGRES_PASSWORD:database123}
     driver-class-name: org.postgresql.Driver
 
+  main:
+      allow-circular-references: true
+
 flyway:
   baseline-on-migrate: true
   enabled: true

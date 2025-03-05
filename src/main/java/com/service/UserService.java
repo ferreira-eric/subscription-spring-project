@@ -4,12 +4,12 @@ import com.dtos.UserDTO;
 import com.exceptions.EntityNotFoundException;
 import com.repository.UserRepository;
 import com.repository.entity.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,9 +18,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public UserDTO create(UserDTO userDTO) {
-        return UserDTO.deserialize(userRepository.save(User.deserialize(userDTO)));
+        return modelMapper.map(userRepository.save(modelMapper.map(userDTO, User.class)),
+                UserDTO.class);
     }
 
     public List<UserDTO> findAll() {

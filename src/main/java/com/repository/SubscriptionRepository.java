@@ -7,11 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 
-    @Query("SELECT subs FROM Subscription subs WHERE subs.user = :idUser")
+    @Query("SELECT subs FROM Subscription subs WHERE subs.user.id = :idUser")
     Optional<Subscription> findByUserId(@Param("idUser") Long idUser);
 }

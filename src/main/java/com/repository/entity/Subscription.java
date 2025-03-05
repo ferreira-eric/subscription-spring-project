@@ -1,8 +1,5 @@
 package com.repository.entity;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,11 +20,11 @@ public class Subscription implements Serializable {
     private static final long serialVersionUID = 3279216625113353138L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @OneToOne
@@ -41,12 +38,4 @@ public class Subscription implements Serializable {
     @LastModifiedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime updatedAt;
-
-    public static Subscription deserialize(Object object){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        return mapper.convertValue(object, Subscription.class);
-    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserAPI {
 
     @PostMapping("/user")
-    ResponseEntity<Object> saveUser(@RequestBody @Valid UserDTO userDTO);
+    ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO);
 
     @GetMapping("/user/{id}")
     ResponseEntity<?> getUserById(@PathVariable(value = "id") Long idProduct);
@@ -19,7 +19,7 @@ public interface UserAPI {
     ResponseEntity<List<?>> getAllUser();
 
     @PutMapping("/user/{id}")
-    ResponseEntity<Object> update(@RequestBody @Valid UserDTO userDTO);
+    ResponseEntity<Object> updateUser(@RequestBody @Valid UserDTO userDTO);
 
     @DeleteMapping("/user/{id}")
     ResponseEntity<?> deleteUser(@PathVariable(value = "id") Long idProduct);

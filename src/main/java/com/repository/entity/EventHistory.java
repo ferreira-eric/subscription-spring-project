@@ -23,7 +23,7 @@ public class EventHistory {
     private static final long serialVersionUID = 654304531482054132L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

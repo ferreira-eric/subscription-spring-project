@@ -1,9 +1,13 @@
 package com.service;
 
+import com.dtos.SubscriptionDTO;
 import com.exceptions.EntityNotFoundException;
 import com.exceptions.StatusNotFoundException;
 import com.repository.StatusRepository;
 import com.repository.entity.Status;
+import com.repository.entity.Subscription;
+import com.utils.enums.StatusEnum;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,32 +17,37 @@ import static com.utils.enums.StatusEnum.*;
 public class StatusService {
 
     @Autowired
-    StatusRepository statusRepository;
+    private StatusRepository statusRepository;
 
-    public Status createStatus() {
-        var status = Status.builder()
-                .statusName(SUBSCRIPTION_WAITING_FOR_PAYMENT)
-                .build();
+    @Autowired
+    private SubscriptionService subscriptionService;
 
-        return statusRepository.save(status);
+    private final ModelMapper modelMapper = new ModelMapper();
+
+    public Status getStatusByStatusEnum(StatusEnum statusName) {
+        return statusRepository.getByStatusName(statusName);
     }
 
-    public void updateStatusToCanceled(Long id) throws StatusNotFoundException{
-        Status status = statusRepository.getReferenceById(id);
+    public void updateStatusToCanceled(SubscriptionDTO subscriptionDTO) throws StatusNotFoundException{
+        Subscription subscription = modelMapper.map(subscriptionDTO, Subscription.class);
 
-        if(statusIsCanceled(status))  throw new StatusNotFoundException();
+        if(statusIsCanceled(statusRepository
+                .getReferenceById(subscription.getStatus().getId())))  throw new StatusNotFoundException();
 
-        status.setStatusName(SUBSCRIPTION_CANCELED);
-        statusRepository.save(status);
+        subscription.setStatus(statusRepository.getByStatusName(SUBSCRIPTION_CANCELED));
+
+        subscriptionService.update(subscription.getId(), subscription);
     }
 
-    public void updateStatusToRestarted(Long id) throws StatusNotFoundException{
-        Status status = statusRepository.getReferenceById(id);
+    public void updateStatusToRestarted(SubscriptionDTO subscriptionDTO) throws StatusNotFoundException{
+        Subscription subscription = modelMapper.map(subscriptionDTO, Subscription.class);
 
-        if(!statusIsCanceled(status))  throw new StatusNotFoundException();
+        if(!statusIsCanceled(statusRepository
+                .getReferenceById(subscription.getStatus().getId())))  throw new StatusNotFoundException();
 
-        status.setStatusName(SUBSCRIPTION_RESTARTED);
-        statusRepository.save(status);
+        subscription.setStatus(statusRepository.getByStatusName(SUBSCRIPTION_RESTARTED));
+
+        subscriptionService.update(subscription.getId(), subscription);
     }
 
     public Status getById(Long id) {

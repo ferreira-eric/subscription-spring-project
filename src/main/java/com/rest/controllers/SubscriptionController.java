@@ -7,12 +7,14 @@ import com.service.EventHistoryService;
 import com.service.StatusService;
 import com.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.springframework.http.ResponseEntity.badRequest;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(value = "/subscription")
@@ -30,41 +32,43 @@ public class SubscriptionController implements SubscriptionAPI {
     @Override
     public ResponseEntity<Object> createSubscription(SubscriptionDTO subscriptionDTO) {
         if(subscriptionService.userHasSubscription(subscriptionDTO.getUserId())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return badRequest().build();
         }
 
-        var subscription = subscriptionService.create(subscriptionDTO);
+        var subscriptionDto = subscriptionService.create(subscriptionDTO);
 
-        eventHistoryService.createEventHistory(subscription, subscription.getId());
+        eventHistoryService.createEventHistory(subscriptionDto, subscriptionDto.getStatusId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(subscription);
+        return ok(subscriptionDto);
     }
 
     @Override
     public ResponseEntity<Object> canceledSubscription(Long idSubscription){
         try {
             var subscription = subscriptionService.findById(idSubscription);
-            statusService.updateStatusToCanceled(subscription.getStatusId());
+            statusService.updateStatusToCanceled(subscription);
 
             eventHistoryService.createEventHistory(subscription, subscription.getStatusId());
 
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ok().build();
         }
-        catch (StatusNotFoundException st) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(st.getMessage());
+        catch (StatusNotFoundException ex) {
+            return badRequest().body(ex.getMessage());
         }
     }
 
     @Override
     public ResponseEntity<Object> restartedSubscription(Long idSubscription){
         try {
-            eventHistoryService.createEventHistory(subscriptionService.findById(idSubscription),
-                    subscriptionService.restartedSubscription(idSubscription));
+            var subscription = subscriptionService.findById(idSubscription);
+            statusService.updateStatusToRestarted(subscription);
 
-            return ResponseEntity.status(HttpStatus.OK).build();
+            eventHistoryService.createEventHistory(subscription, subscription.getStatusId());
+
+            return ok().build();
         }
         catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            return badRequest().body(ex.getMessage());
         }
     }
 
@@ -72,13 +76,13 @@ public class SubscriptionController implements SubscriptionAPI {
     public ResponseEntity<Object> getSubscriptionById(Long idSubscription) {
         var subscription = subscriptionService.findById(idSubscription);
 
-        return ResponseEntity.status(HttpStatus.OK).body(subscription);
+        return ok(subscription);
     }
 
     @Override
     public ResponseEntity<List<?>> getAllSubscription() {
-        var subscription = subscriptionService.findAll();
+        var subscriptions = subscriptionService.findAll();
 
-        return ResponseEntity.status(HttpStatus.OK).body(subscription);
+        return ok(subscriptions);
     }
 }
